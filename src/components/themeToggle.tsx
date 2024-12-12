@@ -10,17 +10,15 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ className }: ThemeToggleProps) {
-  const { setTheme, theme, systemTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
 
   return (
     <Switch
       // className={cn("w-10", className)}
-      defaultChecked={
-        theme === "system" ? systemTheme === "dark" : theme === "dark"
-      }
+      defaultChecked={resolvedTheme === "dark"}
       // checkedIcon={<Moon className="h-4 w-4" />}
       // uncheckedIcon={<Sun className="h-4 w-4" />}
-      onCheckedChange={checked => {
+      onCheckedChange={(checked) => {
         setTheme(checked ? "dark" : "light");
         EventTracker.track("theme_toggle", {
           theme: checked ? "dark" : "light",

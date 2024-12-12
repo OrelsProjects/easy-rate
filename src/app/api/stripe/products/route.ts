@@ -13,11 +13,11 @@ export async function GET(req: NextRequest) {
     const products: Product[] = [];
 
     const appProducts = stripeProducts
-      .filter(stripeProduct => stripeProduct.active)
-      .filter(stripeProduct =>
+      .filter((stripeProduct) => stripeProduct.active)
+      .filter((stripeProduct) =>
         stripeProduct.metadata.app
           ?.toLowerCase()
-          .includes(appName.toLowerCase()),
+          .includes(appName.toLowerCase())
       );
 
     for (const stripeProduct of appProducts) {
@@ -25,30 +25,29 @@ export async function GET(req: NextRequest) {
         product: stripeProduct.id,
       });
       stripePrices
-        .filter(stripePrice => stripePrice.active && stripePrice.unit_amount)
+        .filter((stripePrice) => stripePrice.active && stripePrice.unit_amount)
         // only those that have StripeGuard
-        .map(stripePrice => {
+        .map((stripePrice) => {
           const product: Product = {
             id: stripeProduct.id,
-            name: stripeProduct.description || stripeProduct.name,
+            name: stripeProduct.name || "",
             priceStructure: {
               id: stripePrice.id,
               currency: stripePrice.currency,
               price: stripePrice.unit_amount! / 100,
-              tokens: parseInt(stripeProduct.metadata.tokens),
             },
-            noCreditCard: stripeProduct.metadata.noCreditCard === "true",
             features: stripeProduct.marketing_features.map(
-              feature => feature.name || "",
+              (feature) => feature.name || ""
             ),
             recommended: stripeProduct.metadata.recommended === "true",
+            description: stripeProduct.description || "",
           };
           products.push(product);
         });
     }
 
     const productsSortedByPrice = products.sort(
-      (a, b) => b.priceStructure.price - a.priceStructure.price,
+      (a, b) => b.priceStructure.price - a.priceStructure.price
     );
 
     return NextResponse.json(productsSortedByPrice, { status: 200 });
@@ -56,7 +55,7 @@ export async function GET(req: NextRequest) {
     loggerServer.error("Error getting products", "system", error);
     return NextResponse.json(
       { error: "Error getting products" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

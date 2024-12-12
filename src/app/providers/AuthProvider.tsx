@@ -70,15 +70,7 @@ export default function AuthProvider({
 
   useEffect(() => {
     if (status === "loading") return;
-    if (status === "authenticated") {
-      if (
-        pathname.includes("login") ||
-        pathname.includes("register") ||
-        pathname === "/"
-      ) {
-        router.push("/plans", { preserveQuery: true });
-      }
-    } else {
+    if (status !== "authenticated") {
       if (!pathname.includes("login") && !pathname.includes("register")) {
         router.push("/", { preserveQuery: true });
       }

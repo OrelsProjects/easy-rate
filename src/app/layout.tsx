@@ -6,9 +6,10 @@ import SessionWrapper from "@/app/providers/SessionWrapper";
 import StoreProvider from "@/app/providers/StoreProvider";
 import TopLoaderProvider from "@/app/providers/TopLoaderProvider";
 import Loading from "@/components/ui/loading";
-import { initLogger } from "@/logger";
-import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
+import { cn } from "@/lib/utils";
+import { Recursive } from "@/lib/utils/fonts";
+import { ThemeProvider } from "@/app/providers/ThemeProvider";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -63,8 +64,6 @@ export const metadata = {
 };
 
 export default function Layout({ children }: RootLayoutProps) {
-  initLogger();
-
   return (
     <html lang="en">
       <head>
@@ -77,7 +76,7 @@ export default function Layout({ children }: RootLayoutProps) {
         <meta property="og:image:width" content="<generated>" />
         <meta property="og:image:height" content="<generated>" />
       </head>
-      <body className="antialiased">
+      <body className={cn("antialiased", Recursive.className)}>
         <Suspense
           fallback={
             <Loading spinnerClassName="absolute top-1/2 left-1/2 h-10 w-10" />
@@ -86,11 +85,9 @@ export default function Layout({ children }: RootLayoutProps) {
           <StoreProvider>
             <SessionWrapper>
               <ThemeProvider>
-                <AuthProvider>
-                  <TopLoaderProvider />
-                  {children}
-                  <ClientTrackersProvider />
-                </AuthProvider>
+                <TopLoaderProvider />
+                {children}
+                <ClientTrackersProvider />
               </ThemeProvider>
             </SessionWrapper>
           </StoreProvider>

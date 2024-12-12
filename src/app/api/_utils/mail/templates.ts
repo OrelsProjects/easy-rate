@@ -137,7 +137,7 @@ export function generatePaymentProcessingIssueEmail() {
 export function generateWebhookFailureEmail(
   event: Event,
   eventTime: Date,
-  failedWebhooks: number,
+  failedWebhooks: number
 ) {
   const envPath = process.env.NODE_ENV === "production" ? "" : "test/";
 
@@ -312,7 +312,7 @@ export function baseEmailTemplate(content: string) {
 export function generateInvoicePaymentFailedEmail(
   invoiceId: string,
   amount: number,
-  currency: string,
+  currency: string
 ) {
   const content = `
     <h2>Failed Payment</h2>
@@ -336,7 +336,7 @@ export function generateSubscriptionCanceledEmail(subscriptionId: string) {
 }
 export function generateSubscriptionTrialEndingEmail(
   subscriptionId: string,
-  trialEndDate: Date,
+  trialEndDate: Date
 ) {
   const content = `
     <h2>Your Trial is Ending Soon</h2>
@@ -345,4 +345,103 @@ export function generateSubscriptionTrialEndingEmail(
     <a href="https://dashboard.stripe.com/subscriptions/${subscriptionId}" class="button">Manage Subscription</a>
   `;
   return baseEmailTemplate(content);
+}
+
+export function generateSuccessfulPaymentMail(paymentId: string) {
+  const content = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Your Signup</title>
+  <style>
+    :root {
+      --background: hsl(0, 0%, 9.41%);
+      --foreground: hsl(0, 0%, 58.82%);
+      --card: hsl(0, 0%, 10.98%);
+      --card-foreground: hsl(0, 0%, 94.9%);
+      --primary: hsl(38, 93%, 53%);
+      --primary-foreground: hsl(38, 93%, 13%);
+      --border: hsl(0, 0%, 16.86%);
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .header {
+      text-align: center;
+      color: var(--card-foreground);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .message {
+      margin: 20px 0;
+      line-height: 1.6;
+      color: var(--card-foreground);
+    }
+
+    .cta {
+      display: block;
+      margin: 30px auto;
+      padding: 15px 20px;
+      text-align: center;
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      width: fit-content;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--foreground);
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>Complete Your Signup</h1>
+    </div>
+    <div class="message">
+      <p>Thank you for your payment! You're just one step away from unlocking your access.</p>
+      <p>Click the button below to complete your signup and start using our platform right away:</p>
+    </div>
+    <a href="${process.env.NEXT_PUBLIC_APP_URL}/login?payment_id=${paymentId}" class="cta">Complete Signup</a>
+    <div class="footer">
+      <p>If you have any questions or need assistance, please <a href="mailto:support@example.com">contact us</a>.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  return content;
 }

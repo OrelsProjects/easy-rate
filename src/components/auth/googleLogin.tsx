@@ -10,17 +10,19 @@ import Loading from "@/components/ui/loading";
 interface GoogleLoginProps {
   className?: string;
   signInTextPrefix?: string;
+  paymentId: string;
 }
 
 export default function GoogleLogin({
   className,
   signInTextPrefix,
+  paymentId,
 }: GoogleLoginProps) {
   const { signInWithGoogle, loading } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
-      toast.promise(signInWithGoogle(), {
+      toast.promise(signInWithGoogle(paymentId), {
         pending: "Signing in...",
       });
     } catch (error: any) {

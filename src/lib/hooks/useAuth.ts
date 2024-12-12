@@ -11,10 +11,12 @@ const useAuth = () => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (paymentId: string) => {
     try {
       setLoading(true);
-      await signIn("google");
+      await signIn("google", {
+        callbackUrl: `${window.location.origin}/api/user/setup/${paymentId}`,
+      });
     } catch (error: any) {
       if (error?.name === "UserAlreadyAuthenticatedException") {
         EventTracker.track("User already authenticated");
@@ -62,7 +64,7 @@ const useAuth = () => {
         throw error;
       }
     },
-    [],
+    []
   );
 
   const signUpWithEmail = useCallback(
@@ -70,7 +72,7 @@ const useAuth = () => {
       email: string,
       password: string,
       register?: boolean,
-      displayName: string = "",
+      displayName: string = ""
     ) => {
       setLoading(true);
       try {
@@ -90,7 +92,7 @@ const useAuth = () => {
         throw error;
       }
     },
-    [],
+    []
   );
 
   const signOut = useCallback(async () => {

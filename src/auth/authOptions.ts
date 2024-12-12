@@ -1,21 +1,22 @@
 import { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import GoogleProvider from "next-auth/providers/google";
-import AppleProvider from "next-auth/providers/apple";
+import { PrismaClient } from "@prisma/client";
+import { session } from "@/auth/authUtils";
+
+const prisma = new PrismaClient();
 
 export const authOptions: AuthOptions = {
+  debug: process.env.NODE_ENV === "development",
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_AUTH_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET as string,
     }),
-    AppleProvider({
-      clientId: process.env.APPLE_ID as string,
-      clientSecret: process.env.APPLE_SECRET as string,
-    }),
   ],
-  session: {
-    strategy: "jwt", // This is the default value
-  },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    session,
+  },
 };
